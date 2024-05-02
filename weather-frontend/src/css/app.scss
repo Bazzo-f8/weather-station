@@ -1,0 +1,33 @@
+div{
+  font-family: "Gill Sans MT";
+}
+
+.searchbar {
+  width: 800px;
+  padding-bottom: 32px;
+}
+
+@media screen and (max-width: 800px) {
+  .cardContainer {
+    display: grid!important;
+  }
+  .my-card {
+    width: 90%!important;
+    margin: 3%;
+  }
+}
+.iconCard {
+  color: $primary;
+}
+.fa-cloud{
+  color:$cloud;
+}
+.fa-sun{
+  color: $sun;
+}
+.fa-snowflake{
+  color: $snowflake;
+}
+.fa-cluod-rain{
+  color: $cloud-rain;
+}

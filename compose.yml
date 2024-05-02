@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+#  frontend:
+#    build: ./weather-frontend
+#    depends_on:
+#      - server
+#    ports:
+#      - "9000:9000"
+#    links:
+#      - server
+#
+#    restart: unless-stopped
+
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    restart: unless-stopped
+
+  server:
+    build: ./weather-server
+    depends_on:
+      - mongodb
+    ports:
+      - "3000:3000"
+    environment:
+      MONGODB_HOST: mongodb
+      MONGODB_PORT: 27017
+      MONGODB_USERNAME: admin
+      MONGODB_PASSWORD: admin
+
+    links:
+      - mongodb
+
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
