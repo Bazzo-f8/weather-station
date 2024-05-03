@@ -9,7 +9,6 @@ const precipitation = ref('')
 
 onMounted(()=>{
   definePrecipitation( Prop.city.precipitation)
-  console.log("try push")
 })
 
 const Prop = defineProps({
