@@ -1,10 +1,10 @@
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout view="hHh lpR fFf ">
     <q-header elevated class="bg-primary text-white" height-hint="98">
       <q-toolbar>
         <q-toolbar-title>
           <q-avatar>
-            <img src="public/icons/favicon-96x96.png">
+            <img src="public/icons/Dad.png">
           </q-avatar>
           Weather Station
         </q-toolbar-title>
@@ -31,4 +31,5 @@ import MyFooter from "components/myFooter.vue";
 .loginlogo{
   font-size: 25px;
 }
+
 </style>

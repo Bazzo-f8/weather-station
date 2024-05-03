@@ -8,6 +8,7 @@
           </q-avatar>
           Weather Station
         </q-toolbar-title>
+        <search-bar></search-bar>
         <div class="spaceforlogin">
           <q-icon  name="fa-solid fa-circle-user" class="loginlogo"> </q-icon>
         </div>
@@ -25,6 +26,7 @@
 </template>
 <script setup>
 import MyFooter from "components/myFooter.vue";
+import SearchBar from "components/searchBar.vue";
 </script>
 <style scoped>
 .loginlogo{
