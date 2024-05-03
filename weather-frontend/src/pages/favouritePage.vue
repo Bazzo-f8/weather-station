@@ -38,19 +38,6 @@ const arrayCity = [
 
 <template>
   <div class="q-pa-md cardContainer">
-    <button @click="async () => {
-    try {
-      const response = await axios
-      .post(`http://localhost:3000/search-city`, { value: 'montichiari' }); // Send POST request with city name
-      console.log(response.data);
-
-      } catch (error) {
-      console.error('Error searching city:', error);
-      }
-
-    }">
-      click
-    </button>
     <template v-for="index in arrayCity.length" :key="index">
       <card-component :city="arrayCity[index-1]"></card-component>
     </template>

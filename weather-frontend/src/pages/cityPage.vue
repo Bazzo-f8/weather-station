@@ -3,6 +3,9 @@
     <div class="page-upper-container">
 
       <div class="current-data">
+        <button @click="callToApi()">
+          click
+        </button>
         <br>
         <br>
         <br>
@@ -40,23 +43,36 @@
 
 <script setup>
 import {cityStore} from "stores/cityStore";
-import {ref} from 'vue'
+import {ref, onBeforeMount} from 'vue'
+import axios from 'axios';
 
 const arrowDays = ref([])
 const myCityStore = cityStore();
 myCityStore.hydrateFromSessionStorage();
 
+onBeforeMount(() =>{
+  console.log(takeCoords())
+})
+
+const takeCoords  = async () => {
+  try {
+    const response = await axios
+      .post(`http://localhost:3000/hourly`, { lat: 45.53558, long: 10.21472, nDays:7});
+    console.log(response.data);
+
+  } catch (error) {
+    console.error('Error searching city:', error);
+  }
+}
 
 
-
-for(var i=0;i<7;i++){
+for(let i=0;i<7;i++){
   const date = new Date()
   date.setDate(date.getDate() + i);
   const dayname = date.toLocaleString('it-IT', { weekday: 'long' });
   const shortDayname = dayname.slice(0, 3);
   arrowDays.value.push(shortDayname);
 }
-console.log(arrowDays.value)
 </script>
 
 
