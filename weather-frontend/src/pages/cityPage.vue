@@ -3,7 +3,7 @@
     <div class="page-upper-container">
 
       <div class="current-data">
-        <button @click="callToApi()">
+        <button>
           click
         </button>
         <br>
@@ -12,8 +12,8 @@
       </div>
 
       <q-list class="hourly-container">
-        <q-item v-for="hour in 25" :key="hour">
-          <q-item-section class="hourly-div">
+        <q-item v-for="hour in 25" :key="hour" class="hourly-div">
+          <q-item-section>
             {{ hour-1 }}:00
           </q-item-section>
           <q-item-section>
@@ -56,8 +56,9 @@ onBeforeMount(() =>{
 
 const takeCoords  = async () => {
   try {
+    console.log(myCityStore.name)
     const response = await axios
-      .post(`http://localhost:3000/hourly`, { lat: 45.53558, long: 10.21472, nDays:7});
+      .get(`http://localhost:3000/hourly`, { value: myCityStore.name, num_days:7 });
     console.log(response.data);
 
   } catch (error) {
@@ -139,5 +140,6 @@ for(let i=0;i<7;i++){
 }
 .hourly-div:hover {
   background-color: rgba(255, 255, 255, 0.51);
+  border-radius: 20px;
 }
 </style>

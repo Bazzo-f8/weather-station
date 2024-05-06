@@ -9,10 +9,10 @@
         hide-selected
         fill-input
         input-debounce="0"
-        :options="options"
-        @filter="filterFn"
         placeholder="city filter"
       >
+        <!--        :options="options"-->
+        <!--        @filter="filterFn"-->
         <template v-slot:no-option>
           <q-item>
             <q-item-section class="text-grey">
