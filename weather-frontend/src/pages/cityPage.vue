@@ -3,7 +3,7 @@
     <div class="page-upper-container">
 
       <div class="current-data">
-        <button>
+        <button @click="takeCoords()">
           click
         </button>
         <br>
@@ -58,8 +58,8 @@ const takeCoords  = async () => {
   try {
     const response = await axios.get(`http://localhost:3000/hourly`, {
       params: {
-        value,
-        num_days: numDays
+        value: cityStore.name,
+        num_days: 7
       }
     });
 
