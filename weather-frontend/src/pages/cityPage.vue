@@ -13,7 +13,7 @@
 
       <q-list class="hourly-container">
         <q-item v-for="hour in 25" :key="hour">
-          <q-item-section>
+          <q-item-section class="hourly-div">
             {{ hour-1 }}:00
           </q-item-section>
           <q-item-section>
@@ -136,5 +136,8 @@ for(let i=0;i<7;i++){
   border-radius: 20px;
   overflow-y: auto!important;
   scrollbar-width: none;
+}
+.hourly-div:hover {
+  background-color: rgba(255, 255, 255, 0.51);
 }
 </style>
