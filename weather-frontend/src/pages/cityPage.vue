@@ -6,6 +6,7 @@
         <button @click="takeCoords()">
           click
         </button>
+        {{data.value}}
         <br>
         <br>
         <br>
@@ -46,12 +47,13 @@ import {cityStore} from "stores/cityStore";
 import {ref, onBeforeMount} from 'vue'
 import axios from 'axios';
 
+const data = ref({})
 const arrowDays = ref([])
 const myCityStore = cityStore();
 myCityStore.hydrateFromSessionStorage();
 
 onBeforeMount(() =>{
-  takeCoords()
+  data.value = takeCoords()
 })
 
 const takeCoords  = async () => {
