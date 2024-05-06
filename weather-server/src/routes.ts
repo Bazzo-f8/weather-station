@@ -26,9 +26,10 @@ const geoLoc = new apiGeoLoc();
 //region Api per prendere il meteo
 router.get('/current', async (req, res) => {
     try {
-        const { value } = req.body;
+        const { value } = req.query; // Accessing query parameters
+        // @ts-ignore
         const city  = await searchCity(value);
-        //console.log(city?.lat + "------------------");
+        // @ts-ignore
         const data = await weather.getCurrent(city?.lat, city?.long); // Fetch data using the Axios client
         await db.addCurrentToCity(city, data)
         res.json(data); // Send the data as JSON response
@@ -40,9 +41,11 @@ router.get('/current', async (req, res) => {
 
 router.get('/hourly', async (req, res) => {
     try {
-        const { value } = req.body;
+        const { value, num_days } = req.query; // Accessing query parameters
+        // @ts-ignore
         const city  = await searchCity(value);
-        const data : Hourly | undefined = await weather.getHourly(city?.lat, city?.long, req.body.num_days); // Fetch data using the Axios client
+        // @ts-ignore
+        const data : Hourly | undefined = await weather.getHourly(city?.lat, city?.long, num_days); // Fetch data using the Axios client
         await db.addHourlyToCity(city, data)
         res.json(data); // Send the data as JSON response
     } catch (error) {
@@ -53,9 +56,11 @@ router.get('/hourly', async (req, res) => {
 
 router.get('/daily', async (req, res) => {
     try {
-        const { value } = req.body;
+        const { value, num_days } = req.query; // Accessing query parameters
+        // @ts-ignore
         const city  = await searchCity(value);
-        const data = await weather.getDaily(city?.lat, city?.long, req.body.num_days); // Fetch data using the Axios client
+        // @ts-ignore
+        const data = await weather.getDaily(city?.lat, city?.long, num_days); // Fetch data using the Axios client
         await db.addDailyToCity(city, data)
         res.json(data); // Send the data as JSON response
     } catch (error) {

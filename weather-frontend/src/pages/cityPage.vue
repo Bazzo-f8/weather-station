@@ -51,22 +51,24 @@ const myCityStore = cityStore();
 myCityStore.hydrateFromSessionStorage();
 
 onBeforeMount(() =>{
-  console.log(takeCoords())
+  takeCoords()
 })
 
 const takeCoords  = async () => {
   try {
-    const response = await axios.get(`http://localhost:3000/hourly`, {
-      params: {
-        value: cityStore.name,
-        num_days: 7
-      }
-    });
+    const value = "bergamo";
+    const params = {
+      value,
+      num_days: 7
+    }
 
-    const data = response.data;
-    // Handle the fetched data here (e.g., update UI, store in state)
-    console.log(data); // Example: Log the data to the console
+    const {data} = await axios.get(`http://localhost:3000/hourly`, {params: {
+      value: value,
+      num_days: 7
+    }});
 
+    console.log({data}); // Example: Log the data to the console
+    return {data};
   } catch (error) {
     console.error('Error fetching hourly data:', error);
     // Handle errors appropriately (e.g., display error message to user)
