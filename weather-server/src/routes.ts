@@ -106,6 +106,16 @@ router.get('/search-id',async (req, res) => {
     res.json(cityDb);
 });
 
+// per ottenere la citta nel db cercando per nome
+router.get('/get-cities',async (req, res) => {
+
+    // @ts-ignore
+    let cities = await db.getAllCity();
+    console.log(cities);
+
+    res.json(cities);
+});
+
 //endregion
 
 

@@ -127,6 +127,23 @@ export class Database {
         }
     }
 
+    // Metodo per aggiungere il meteo di N giorni ad una determinata città
+    public async getAllCity() {
+
+        try {
+            // Use the find method to get all cities
+            const cities = await CityModel.find({}).select('-weatherCurrent -weatherHourly -weatherDaily');;
+
+            // Log the cities to the console or do further processing
+            console.log('All cities:', cities);
+
+            // Return the list of cities if needed
+            return cities;
+        } catch (error) {
+            console.error('Error getting all cities:', error);
+            throw error; // Rethrow the error to be handled by the caller
+        }
+    }
     //endregion
 
     ////////////////////////////
