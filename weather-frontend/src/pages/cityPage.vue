@@ -64,10 +64,7 @@ const takeCoords  = async () => {
       num_days: 7
     }
 
-    const {data} = await axios.get(`http://localhost:3000/hourly`, {params: {
-      value: value,
-      num_days: 7
-    }});
+    const {data} = await axios.get(`http://localhost:3000/hourly`, {params: params});
 
     console.log({data}); // Example: Log the data to the console
     return {data};
