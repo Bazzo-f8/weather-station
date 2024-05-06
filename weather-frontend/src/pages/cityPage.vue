@@ -56,13 +56,20 @@ onBeforeMount(() =>{
 
 const takeCoords  = async () => {
   try {
-    console.log(myCityStore.name)
-    const response = await axios
-      .get(`http://localhost:3000/hourly`, { value: myCityStore.name, num_days:7 });
-    console.log(response.data);
+    const response = await axios.get(`http://localhost:3000/hourly`, {
+      params: {
+        value,
+        num_days: numDays
+      }
+    });
+
+    const data = response.data;
+    // Handle the fetched data here (e.g., update UI, store in state)
+    console.log(data); // Example: Log the data to the console
 
   } catch (error) {
-    console.error('Error searching city:', error);
+    console.error('Error fetching hourly data:', error);
+    // Handle errors appropriately (e.g., display error message to user)
   }
 }
 
