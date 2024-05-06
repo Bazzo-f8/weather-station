@@ -58,7 +58,7 @@ onBeforeMount(() =>{
 
 const takeCoords  = async () => {
   try {
-    const value = "bergamo";
+    const value =myCityStore.name;
     const params = {
       value,
       num_days: 7
