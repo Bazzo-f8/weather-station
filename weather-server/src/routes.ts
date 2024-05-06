@@ -10,14 +10,24 @@ const router = express.Router();
 const db = new Database();
 db.connectToMongoDB()
 
+const searchCity = async (value : string): Promise<City | undefined>  => {
+    console.log('Searching city:', value);
+
+    const city = await geoLoc.getLatLon(value);
+    console.log(city);
+    await db.addCityToDB(city)
+    return city
+}
+
 const weather = new apiWeather();
 const geoLoc = new apiGeoLoc();
-let city: City | undefined = undefined;
 
 
 //region Api per prendere il meteo
 router.get('/current', async (req, res) => {
     try {
+        const { value } = req.body;
+        const city  = await searchCity(value);
         //console.log(city?.lat + "------------------");
         const data = await weather.getCurrent(city?.lat, city?.long); // Fetch data using the Axios client
         await db.addCurrentToCity(city, data)
@@ -30,6 +40,8 @@ router.get('/current', async (req, res) => {
 
 router.get('/hourly', async (req, res) => {
     try {
+        const { value } = req.body;
+        const city  = await searchCity(value);
         const data : Hourly | undefined = await weather.getHourly(city?.lat, city?.long, req.body.num_days); // Fetch data using the Axios client
         await db.addHourlyToCity(city, data)
         res.json(data); // Send the data as JSON response
@@ -41,6 +53,8 @@ router.get('/hourly', async (req, res) => {
 
 router.get('/daily', async (req, res) => {
     try {
+        const { value } = req.body;
+        const city  = await searchCity(value);
         const data = await weather.getDaily(city?.lat, city?.long, req.body.num_days); // Fetch data using the Axios client
         await db.addDailyToCity(city, data)
         res.json(data); // Send the data as JSON response
@@ -53,18 +67,19 @@ router.get('/daily', async (req, res) => {
 
 //region Cercare la citta
 
-// per ottenere lat lon
-router.post('/search-city',async (req, res) => {
-    const { value } = req.body;
-    // Process the city data (e.g., query weather-frontend API)
-    console.log('Searching city:', value);
 
-    city = await geoLoc.getLatLon(value);
-    console.log(city);
-    await db.addCityToDB(city)
-
-    res.json("post city");
-});
+// // per ottenere lat lon
+// router.post('/search-city',async (req, res) => {
+//     const { value } = req.body;
+//     // Process the city data (e.g., query weather-frontend API)
+//     console.log('Searching city:', value);
+//
+//     const city = await geoLoc.getLatLon(value);
+//     console.log(city);
+//     await db.addCityToDB(city)
+//
+//     res.json("post city");
+// });
 
 // per ottenere la citta nel db cercando per nome
 router.get('/db-city',async (req, res) => {
