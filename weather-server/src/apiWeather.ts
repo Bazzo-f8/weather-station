@@ -35,7 +35,7 @@ export class apiWeather {
     };
 
     // api di connessione per ottenere le informazioni del meteo sulle 24 ore della giornata e su N giorni
-    public getHourly = async (lat : number | undefined, lon : number | undefined, nDay : number | undefined) => {
+    public getHourly = async (lat : number | undefined, lon : number | undefined, nDay : string | undefined) => {
         try {
             const { data: result } = await axios.get(
                 `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&forecast_days=${nDay}&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,precipitation,pressure_msl,surface_pressure,cloud_cover,visibility,wind_speed_80m,wind_direction_80m,wind_gusts_10m,temperature_80m,soil_temperature_6cm,soil_moisture_3_to_9cm`
@@ -67,7 +67,7 @@ export class apiWeather {
     };
 
     // api di connessione per ottenere le informazioni medie del meteo di N giorni
-    public getDaily = async (lat : number | undefined, lon : number | undefined, nDay : number | undefined) => {
+    public getDaily = async (lat : number | undefined, lon : number | undefined, nDay : string | undefined) => {
         try {
             const { data: result } = await axios.get(
                 `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&forecast_days=${nDay}&daily=temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,precipitation_sum,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant`

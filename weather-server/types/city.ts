@@ -4,4 +4,5 @@ export type City = {
     long: number,
     timezone: string,
     country: string,
+    region: string,
 }
