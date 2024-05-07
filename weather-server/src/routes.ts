@@ -74,9 +74,42 @@ router.get('/daily', async (req, res) => {
 });
 //endregion
 
+//region user
+
+router.post('/profile/addCity', async (req, res) => {
+    const { city } = req.body;
+    //db.addCityToFavourites(city)
+})
+
+router.post('/profile/login', async (req, res) => {
+    const { city } = req.body;
+    //db.addCityToFavourites(city)
+})
+
+router.post('/profile/register', async (req, res) => {
+    const { city } = req.body;
+    //db.addCityToFavourites(city)
+})
+
+router.post('/profile/logout', async (req, res) => {
+    const { city } = req.body;
+    //db.addCityToFavourites(city)
+})
+
+router.post('/profile/isauth', async (req, res) => {
+    const { city } = req.body;
+    //db.addCityToFavourites(city)
+})
+
+
+
+
+
+
+
+//endregion
+
 //region Cercare la citta
-
-
 
 // per ottenere la citta nel db cercando per nome
 router.get('/db-city',async (req, res) => {
