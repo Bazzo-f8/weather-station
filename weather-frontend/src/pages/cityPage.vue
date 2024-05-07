@@ -6,7 +6,7 @@
         <button @click="takeCoords()">
           click
         </button>
-        {{data.value}}
+        {{ }}
         <br>
         <br>
         <br>
@@ -53,11 +53,20 @@ const myCityStore = cityStore();
 myCityStore.hydrateFromSessionStorage();
 
 onBeforeMount(() =>{
-  data.value = takeCoords()
-})
-onBeforeMount(() =>{
   takeCoords()
 })
+
+// const takeDataBeforeMount = async () => {
+//   try {
+//     const value = myCityStore.name;
+//     const params = {
+//       value,
+//     }
+//     const response = await axios.get(`http://localhost:3000/`, {params: params});
+//   } catch (error) {
+//     console.error('Error fetching hourly data:', error);
+//   }
+// }
 
 const takeCoords  = async () => {
   try {
@@ -69,10 +78,8 @@ const takeCoords  = async () => {
 
     //const {data} = await axios.get(`http://localhost:3000/hourly`, {params: params});
     const response = await axios.get(`http://localhost:3000/hourly`, {params: params});
-
-    console.log(response.data); // Example: Log the data to the console
     data.value = response.data;
-    console.log(data.value);
+    console.log(data.value.appare[1]);
   } catch (error) {
     console.error('Error fetching hourly data:', error);
     // Handle errors appropriately (e.g., display error message to user)
