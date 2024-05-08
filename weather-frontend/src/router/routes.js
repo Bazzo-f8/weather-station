@@ -4,14 +4,14 @@ const routes = [
 
   {
     path: '/',
-    component: () => import('layouts/LoggedLayout.vue'),
+    component: () => import('layouts/loggedLayout.vue'),
     children: [
   { path: '', component: () => import('pages/IndexPage.vue') }
 ]
   },
   {
     path: '/Favourite',
-    component: () => import('layouts/LoggedLayout.vue'),
+    component: () => import('layouts/loggedLayout.vue'),
     children: [
       { path: '', component: () => import('pages/favouritePage.vue') }
     ]
@@ -22,6 +22,10 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/cityPage.vue') }
     ]
+  },
+  {
+    path: "/login",
+    component: () => import("components/loginPopUp.vue"),
   },
   // Always leave this as last one,
   // but you can also remove it
