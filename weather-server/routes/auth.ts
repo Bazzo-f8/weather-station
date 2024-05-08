@@ -2,7 +2,10 @@ import express from 'express'
 import User from '../entity/userModel';
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import passport from 'passport';
+import {Database} from "../src/database";
+
+const db = new Database();
+
 
 const authRouter = express.Router()
 
@@ -20,6 +23,7 @@ authRouter.post('/register', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10)
         const newUser = new User({username, password: hashedPassword})
         await newUser.save()
+        await db.addUserToFavourite(username)
 
         //res.status(201).json({message: "Utente registrato con successo!", user: newUser.username})
         //@ts-ignore

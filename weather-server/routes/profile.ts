@@ -7,7 +7,6 @@ import passport from 'passport';
 const profileRouter = express.Router()
 
 profileRouter.get('/add-favourite', async (req, res) => {
-    const {username, password} = req.body
 
 })
 
