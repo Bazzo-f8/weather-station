@@ -1,9 +1,12 @@
-import {apiWeather} from "./apiWeather";
-import {apiGeoLoc} from "./apiGeoLoc";
-import {Database} from "./database"
+import {apiWeather} from "../src/apiWeather";
+import {apiGeoLoc} from "../src/apiGeoLoc";
+import {Database} from "../src/database"
 import express from 'express';
 import {Hourly} from "../types/hourly";
 import {City} from "../types/city";
+import passport from "passport";
+import authRouter from "./auth";
+
 
 const router = express.Router();
 
@@ -76,27 +79,21 @@ router.get('/daily', async (req, res) => {
 
 //region user
 
+router.use('/auth', authRouter)
+
+router.get('/protected', passport.authenticate('jwt', { session: false }), (req, res) => {
+    return res.status(200).send({
+        message: "Succesful",
+    });
+});
+
 router.post('/profile/addCity', async (req, res) => {
     const { city } = req.body;
     //db.addCityToFavourites(city)
 })
 
-router.post('/profile/login', async (req, res) => {
-    const { city } = req.body;
-    //db.addCityToFavourites(city)
-})
-
-router.post('/profile/register', async (req, res) => {
-    const { city } = req.body;
-    //db.addCityToFavourites(city)
-})
 
 router.post('/profile/logout', async (req, res) => {
-    const { city } = req.body;
-    //db.addCityToFavourites(city)
-})
-
-router.post('/profile/isauth', async (req, res) => {
     const { city } = req.body;
     //db.addCityToFavourites(city)
 })

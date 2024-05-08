@@ -122,7 +122,7 @@ export class Database {
         }
     }
 
-    // Metodo per aggiungere il meteo di N giorni ad una determinata città
+    // Metodo per ottenere tutte le città salvate senza il meteo
     public async getAllCity() {
 
         try {
