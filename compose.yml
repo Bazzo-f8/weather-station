@@ -7,8 +7,8 @@ services:
 #      - server
 #    ports:
 #      - "9000:9000"
-#    links:
-#      - server
+##    links:
+##      - server
 #
 #    restart: unless-stopped
 
