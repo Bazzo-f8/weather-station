@@ -20,6 +20,15 @@ const searchCity = async (value : string): Promise<any>  => {
     const city = await geoLoc.getLatLon(value);
     console.log(city);
     //await db.addCityToDB(city)
+    //@ts-ignore
+    city.forEach(async (cityData) => {
+        try {
+            await db.addCityToDB(cityData);
+            console.log(`City "${cityData.name}" saved successfully.`);
+        } catch (error) {
+            console.error('Error saving city:', error);
+        }
+    });
     return city
 }
 

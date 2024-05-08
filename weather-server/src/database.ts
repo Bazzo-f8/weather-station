@@ -162,6 +162,7 @@ export class Database {
     public async addUserToFavourite(user : string) {
         try {
             const userProfile = await this.getUserByUsername(user)
+
             const newFavouriteUser = new FavouriteModel({
                 //@ts-ignore
                 user_id: userProfile._id,
@@ -170,6 +171,7 @@ export class Database {
             await newFavouriteUser.save();
             console.log(`User "${user}" added successfully to favorite!`);
         } catch (error) {
+            console.log("non funziona sfigato")
             console.error('Error adding user to favourite:', error);
             throw error; // Rethrow the error to be handled by the caller
         }
@@ -184,9 +186,11 @@ export class Database {
     public async addFavourite(user : string, city : City | undefined) {
         try {
             const cityFound = await this.getCityFromDb(city)
+            const userProfile = await this.getUserByUsername(user)
 
             await FavouriteModel.findOneAndUpdate(
-                { username: user },
+                //@ts-ignore
+                { username: userProfile._id },
                         // @ts-ignore
                 { $push: { favourite: cityFound._id } },
                 { new: true }
@@ -202,8 +206,10 @@ export class Database {
     public async removeFavourite(user: string, city : City | undefined) {
         try {
             const cityFound = await this.getCityFromDb(city)
+            const userProfile = await this.getUserByUsername(user)
             await FavouriteModel.findOneAndUpdate(
-                { username: user },
+                //@ts-ignore
+                { username: userProfile._id },
                 // @ts-ignore
                 { $pull: { favourite: cityFound._id } },
                 { new: true }
@@ -218,8 +224,10 @@ export class Database {
 
     public async clearFavourites(user: string) {
         try {
+            const userProfile = await this.getUserByUsername(user)
             await FavouriteModel.findOneAndUpdate(
-                { username: user },
+                //@ts-ignore
+                { username: userProfile._id },
                 { $set: { favourite: [] } },
                 { new: true }
             );
@@ -233,7 +241,9 @@ export class Database {
 
     public async getFavourites(user: string) {
         try {
-            const favourites = await FavouriteModel.findOne({ username: user }).populate('favourite').exec();
+            const userProfile = await this.getUserByUsername(user)
+            //@ts-ignore
+            const favourites = await FavouriteModel.findOne({ username: userProfile._id }).populate('favourite').exec();
 
             if (!favourites) {
                 console.log(`No favourites found for user ${user}.`);
