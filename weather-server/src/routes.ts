@@ -27,8 +27,8 @@ const geoLoc = new apiGeoLoc();
 // per ottenere le citta
 router.get('/search-city',async (req, res) => {
     const value  = req.query.value+""; // Accessing query parameters
-    const city = await searchCity(value);
-    res.json(city);
+    const cities = await searchCity(value);
+    res.json(cities);
 });
 
 //region Api per prendere il meteo
