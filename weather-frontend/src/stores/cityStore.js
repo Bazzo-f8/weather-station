@@ -14,10 +14,10 @@ export const cityStore = defineStore('weather', {
   actions: {
 
     refresh(newCity) {
-      const { name,long,lat,timezone,country,region } = newCity;
+      const { name,lat,long,timezone,country,region } = newCity;
       this.name = name;
-      this.lat = long;
-      this.long = lat;
+      this.lat = lat;
+      this.long = long;
       this.timezone = timezone;
       this.country = country;
       this.region = region;
@@ -36,8 +36,8 @@ export const cityStore = defineStore('weather', {
       const storedData = SessionStorage.getItem('cityStore');
       if (storedData) {
         this.name = storedData.name;
-        this.lat = storedData.lat;
         this.long = storedData.long;
+        this.lat = storedData.lat;
         this.timezone = storedData.timezone;
         this.country = storedData.country;
         this.region = storedData.region;

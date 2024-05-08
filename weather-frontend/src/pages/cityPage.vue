@@ -66,12 +66,12 @@ const thisCity = {
 }
 
 onBeforeMount(()=>{
-  createDays()
+  createVoidArray()
   beforeMount()
+  createDays()
 })
 
 const beforeMount = async () => {
-  console.log(thisCity)
   await fetchHourlyWeather(thisCity)
   splitForWeek()
   currentDay.value = { ... dataForDays.value[0]}
@@ -81,8 +81,8 @@ const beforeMount = async () => {
 
 
 async function fetchHourlyWeather(city) {
+  console.log(city)
   try {
-    console.log((city))
     const response = await axios.get(`http://localhost:3000/hourly`, {
       params: {
         city: JSON.stringify(city), // Stringify city object for query parameter
@@ -91,7 +91,7 @@ async function fetchHourlyWeather(city) {
     });
     const data = response.data;
     // Handle the fetched data here (e.g., update UI, store in state)
-    console.log("data" + data); // Example: Log the data to the console
+    //console.log( data); // Example: Log the data to the console
 
     return data; // You can return the data if needed
   } catch (error) {
@@ -105,22 +105,21 @@ const splitForWeek = () => {
   for (let i = 0; i < 6; i++) {
     let splitVar = i*24
     let secondSplitVar = i*24+24
-    dataForDays.value[i] ={
-      time: data.value.time.slice(splitVar,secondSplitVar),
-      apparent_temperature: data.value.apparent_temperature.slice(splitVar, secondSplitVar),
-      cloud_cover: data.value.cloud_cover.slice(splitVar, secondSplitVar),
-      precipitation: data.value.precipitation.slice(splitVar, secondSplitVar),
-      precipitation_probability: data.value.precipitation_probability.slice(splitVar, secondSplitVar),
-      pressure_msl: data.value.pressure_msl.slice(splitVar, secondSplitVar),
-      relative_humidity_2m: data.value.relative_humidity_2m.slice(splitVar, secondSplitVar),
-      soil_moisture_3_to_9cm: data.value.soil_moisture_3_to_9cm.slice(splitVar, secondSplitVar),
-      soil_temperature_6cm: data.value.soil_temperature_6cm.slice(splitVar, secondSplitVar),
-      surface_pressure: data.value.surface_pressure.slice(splitVar, secondSplitVar),
-      temperature_2m: data.value.temperature_2m.slice(splitVar, secondSplitVar),
-      wind_direction_80m: data.value.wind_direction_80m.slice(splitVar, secondSplitVar),
-    }
+      dataForDays.value[i].time = _.slice(data.value.time, splitVar, secondSplitVar);
+      dataForDays.value[i].apparent_temperature = _.slice(data.value.apparent_temperature, splitVar, secondSplitVar);
+      dataForDays.value[i].cloud_cover = _.slice(data.value.cloud_cover, splitVar, secondSplitVar);
+      dataForDays.value[i].precipitation = _.slice(data.value.precipitation, splitVar, secondSplitVar);
+      dataForDays.value[i].precipitation_probability = _.slice(data.value.precipitation_probability, splitVar, secondSplitVar);
+      dataForDays.value[i].pressure_msl = _.slice(data.value.pressure_msl, splitVar, secondSplitVar);
+      dataForDays.value[i].relative_humidity_2m = _.slice(data.value.relative_humidity_2m, splitVar, secondSplitVar);
+      dataForDays.value[i].soil_moisture_3_to_9cm = _.slice(data.value.soil_moisture_3_to_9cm, splitVar, secondSplitVar);
+      dataForDays.value[i].soil_temperature_6cm = _.slice(data.value.soil_temperature_6cm, splitVar, secondSplitVar);
+      dataForDays.value[i].surface_pressure = _.slice(data.value.surface_pressure, splitVar, secondSplitVar);
+      dataForDays.value[i].temperature_2m = _.slice(data.value.temperature_2m, splitVar, secondSplitVar);
+      dataForDays.value[i].wind_direction_80m = _.slice(data.value.wind_direction_80m, splitVar, secondSplitVar);
+      console.log(dataForDays.value[i])
   }
-  console.log(dataForDays.value[i])
+
   loaded.value=true;
 }
 const createDays = () => {
@@ -157,18 +156,21 @@ const createVoidArray = () => {
   }
 }
 </script>
-dataForDays.value[i].time = _.slice(data.value.time, splitVar, secondSplitVar);
-dataForDays.value[i].apparent_temperature = _.slice(data.value.apparent_temperature, splitVar, secondSplitVar);
-dataForDays.value[i].cloud_cover = _.slice(data.value.cloud_cover, splitVar, secondSplitVar);
-dataForDays.value[i].precipitation = _.slice(data.value.precipitation, splitVar, secondSplitVar);
-dataForDays.value[i].precipitation_probability = _.slice(data.value.precipitation_probability, splitVar, secondSplitVar);
-dataForDays.value[i].pressure_msl = _.slice(data.value.pressure_msl, splitVar, secondSplitVar);
-dataForDays.value[i].relative_humidity_2m = _.slice(data.value.relative_humidity_2m, splitVar, secondSplitVar);
-dataForDays.value[i].soil_moisture_3_to_9cm = _.slice(data.value.soil_moisture_3_to_9cm, splitVar, secondSplitVar);
-dataForDays.value[i].soil_temperature_6cm = _.slice(data.value.soil_temperature_6cm, splitVar, secondSplitVar);
-dataForDays.value[i].surface_pressure = _.slice(data.value.surface_pressure, splitVar, secondSplitVar);
-dataForDays.value[i].temperature_2m = _.slice(data.value.temperature_2m, splitVar, secondSplitVar);
-dataForDays.value[i].wind_direction_80m = _.slice(data.value.wind_direction_80m, splitVar, secondSplitVar);
+
+dataForDays.value[i] ={
+time: data.value.time.slice(splitVar,secondSplitVar),
+apparent_temperature: data.value.apparent_temperature.slice(splitVar, secondSplitVar),
+cloud_cover: data.value.cloud_cover.slice(splitVar, secondSplitVar),
+precipitation: data.value.precipitation.slice(splitVar, secondSplitVar),
+precipitation_probability: data.value.precipitation_probability.slice(splitVar, secondSplitVar),
+pressure_msl: data.value.pressure_msl.slice(splitVar, secondSplitVar),
+relative_humidity_2m: data.value.relative_humidity_2m.slice(splitVar, secondSplitVar),
+soil_moisture_3_to_9cm: data.value.soil_moisture_3_to_9cm.slice(splitVar, secondSplitVar),
+soil_temperature_6cm: data.value.soil_temperature_6cm.slice(splitVar, secondSplitVar),
+surface_pressure: data.value.surface_pressure.slice(splitVar, secondSplitVar),
+temperature_2m: data.value.temperature_2m.slice(splitVar, secondSplitVar),
+wind_direction_80m: data.value.wind_direction_80m.slice(splitVar, secondSplitVar),
+}
 <!--// const takeDataBeforeMount = async () => {-->
 <!--//   try {-->
 <!--//     const value = myCityStore.name;-->

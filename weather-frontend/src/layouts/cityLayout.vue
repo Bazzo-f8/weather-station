@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-toolbar-title>
           <q-avatar>
-            <img src="public/icons/favicon-96x96.png">
+            <img src="weather-frontend/public/icons/favicon-96x96.png">
           </q-avatar>
           Weather Station
         </q-toolbar-title>
