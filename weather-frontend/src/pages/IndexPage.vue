@@ -7,8 +7,6 @@
       <q-btn push color="primary" label="Push" @click="searchForCity"/>
     </div>
 
-
-
   </q-page>
   <div v-if="isSearched">
     <div v-for="city in cityData" :key="city.name">
@@ -22,7 +20,6 @@
 import axios from "axios";
 import { ref } from 'vue'
 import CardComponent from "components/cardComponent.vue";
-//import CardComponent from "components/cardComponent.vue";
 const searchBar = ref('')
 const cityData = ref([])
 
@@ -35,6 +32,7 @@ async function searchForCity() {
   try {
     // console.log(searchBar.value)
     // return
+
     const search = searchBar.value;
     console.log(search);
     const response = await axios.get(`http://localhost:3000/search-city`, {
@@ -46,7 +44,7 @@ async function searchForCity() {
     cityData.value = response.data;
 
     // Handle the fetched city data here (e.g., display suggestions, update UI)
-    console.log(cityData.value); // Example: Log the data to the console
+    //console.log(cityData.value); // Example: Log the data to the console
   } catch (error) {
     console.error('Error fetching city:', error);
   }
