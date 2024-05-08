@@ -6,6 +6,7 @@ import {Hourly} from "../types/hourly";
 import {City} from "../types/city";
 import passport from "passport";
 import authRouter from "./auth";
+import profileRouter from "./profile";
 
 
 const router = express.Router();
@@ -77,7 +78,7 @@ router.get('/daily', async (req, res) => {
 });
 //endregion
 
-//region user
+//region Api per lo user
 
 router.use('/auth', authRouter)
 
@@ -87,53 +88,24 @@ router.get('/protected', passport.authenticate('jwt', { session: false }), (req,
     });
 });
 
-router.post('/profile/addCity', async (req, res) => {
-    const { city } = req.body;
-    //db.addCityToFavourites(city)
-})
-
-
-router.post('/profile/logout', async (req, res) => {
-    const { city } = req.body;
-    //db.addCityToFavourites(city)
-})
-
-
-
-
-
-
+router.use('/profile', profileRouter)
 
 //endregion
 
-//region Cercare la citta
+//region Api per cercare la citta
 
-// per ottenere la citta nel db cercando per nome
-router.get('/db-city',async (req, res) => {
-    const { value } = req.body;
+// per ottenere il meteo di una citta cercando per citta
+router.get('/get-city-weather',async (req, res) => {
+    const city : City = JSON.parse(req.query.city+""); // Accessing query parameters
     // Process the city data (e.g., query weather-frontend API)
-    console.log('Searching city:', value);
-    const temp = await geoLoc.getLatLon(value);
     // @ts-ignore
-    let cityDb = await db.getCityFromDb(temp.name);
+    let cityDb = await db.getCityWeatherFromDb(city)
     console.log(cityDb);
 
     res.json(cityDb);
 });
 
-// per ottenere la citta nel db cercando per id
-router.get('/search-id',async (req, res) => {
-    const { id } = req.body;
-    // Process the city data (e.g., query weather-frontend API)
-    console.log('Searching city:', id);
-    // @ts-ignore
-    let cityDb = await db.getCityFromDbByID(id);
-    console.log(cityDb);
-
-    res.json(cityDb);
-});
-
-// per ottenere la citta nel db cercando per nome
+// per ottenere tutte le citta salvate
 router.get('/get-cities',async (req, res) => {
 
     // @ts-ignore

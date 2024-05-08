@@ -146,10 +146,10 @@ export class Database {
     //region searchCity
 
     // Metodo per recuperare una determinata citta tramite il nome
-    public async getCityFromDb(name: string | undefined) {
+    public async getCityWeatherFromDb(cityToFind: City | undefined) {
         try {
-            // Use Mongoose's findOne method to search for a city by name
-            const city = await CityModel.findOne({ name: name }).exec();
+            // @ts-ignore
+            const city = await CityModel.findOne({ name: cityToFind.name, namecountry: cityToFind.namecountry, region: cityToFind.region }).exec();
 
             if (city) {
                 console.log('City found in the database');
