@@ -1,10 +1,11 @@
 import mongoose from 'mongoose';
 import {City} from "../types/city";
-import {CityModel} from "../entity/CityModel";
+import {CityModel} from "../entity/cityModel";
 import {Hourly} from "../types/hourly";
 import {Daily} from "../types/daily";
 import {Current} from "../types/current";
 import {FavouriteModel} from "../entity/favouriteModel";
+import UserModel from "../entity/userModel";
 
 export class Database {
 
@@ -43,6 +44,7 @@ export class Database {
     public async addCityToDB(city: City | undefined): Promise<void> {
         try {
             if(typeof city === 'undefined') { return }
+            console.log(city)
             const cityExists = await CityModel.exists({ name: city.name });
 
             if (!cityExists) {
@@ -50,6 +52,7 @@ export class Database {
                     name: city.name,
                     lat: city.lat,
                     long: city.long,
+                    region: city.region,
                     timezone: city.timezone,
                     country: city.country,
                 });
@@ -159,14 +162,25 @@ export class Database {
         }
     }
 
+    public async getIdUserByUsername(username : string) {
+        try {
+            // Use the find method to get all cities
+            const userProfile = await UserModel.find({username: username}).select('_id');
+
+            console.log('User profile:', userProfile);
+            return userProfile;
+        } catch (error) {
+            console.error('Error getting all cities:', error);
+            throw error; // Rethrow the error to be handled by the caller
+        }
+    }
+
     public async addUserToFavourite(user : string) {
         try {
-            const userProfile = await this.getUserByUsername(user)
+            const userId = await this.getIdUserByUsername(user)
 
             const newFavouriteUser = new FavouriteModel({
-                //@ts-ignore
-                user_id: userProfile._id,
-                favourite: [],
+                user_id: userId
             });
             await newFavouriteUser.save();
             console.log(`User "${user}" added successfully to favorite!`);
@@ -185,18 +199,22 @@ export class Database {
 
     public async addFavourite(user : string, city : City | undefined) {
         try {
-            const cityFound = await this.getCityFromDb(city)
-            const userProfile = await this.getUserByUsername(user)
+            console.log(city)
+            const favoriteId = await this.getIdCityFromDb(city)
+            console.log(favoriteId)
+            const userProfile = await UserModel.findOne({ username: user });
 
-            await FavouriteModel.findOneAndUpdate(
-                //@ts-ignore
-                { username: userProfile._id },
-                        // @ts-ignore
-                { $push: { favourite: cityFound._id } },
+
+            if (!userProfile) {
+                console.warn("User not found:", user);
+                return;
+            }
+
+            await userProfile.updateOne(
+                { $addToSet: { favourites: favoriteId } },
                 { new: true }
             );
-
-            console.log(`City added to favourite of ${user} successfully.`);
+            console.log("Favourite city added successfully:", favoriteId);
         } catch (error) {
             console.error('Error adding favourite to user:', error);
             throw error; // Rethrow the error to be handled by the caller
@@ -205,14 +223,18 @@ export class Database {
 
     public async removeFavourite(user: string, city : City | undefined) {
         try {
-            const cityFound = await this.getCityFromDb(city)
-            const userProfile = await this.getUserByUsername(user)
-            await FavouriteModel.findOneAndUpdate(
-                //@ts-ignore
-                { username: userProfile._id },
-                // @ts-ignore
-                { $pull: { favourite: cityFound._id } },
-                { new: true }
+            console.log(city)
+            const favoriteId = await this.getIdCityFromDb(city)
+            const userProfile = await UserModel.findOne({ username: user });
+
+
+            if (!userProfile) {
+                console.warn("User not found:", user);
+                return;
+            }
+
+            await userProfile.updateOne(
+                { $pull: { favourites: favoriteId } },
             );
 
             console.log(`City removed from favourites of ${user} successfully.`);
@@ -224,13 +246,14 @@ export class Database {
 
     public async clearFavourites(user: string) {
         try {
-            const userProfile = await this.getUserByUsername(user)
-            await FavouriteModel.findOneAndUpdate(
-                //@ts-ignore
-                { username: userProfile._id },
-                { $set: { favourite: [] } },
-                { new: true }
-            );
+
+            const userProfile = await UserModel.findOne({ username: user });
+
+            if (!userProfile) {
+                console.warn("User not found:", user);
+                return;
+            }
+            await userProfile.updateOne({ favourites: [] });
 
             console.log(`All favourites cleared for user ${user}.`);
         } catch (error) {
@@ -239,18 +262,27 @@ export class Database {
         }
     }
 
-    public async getFavourites(user: string) {
+    public async getFavourites(user: string, weather: string | undefined) {
         try {
-            const userProfile = await this.getUserByUsername(user)
-            //@ts-ignore
-            const favourites = await FavouriteModel.findOne({ username: userProfile._id }).populate('favourite').exec();
+            const userProfile = await UserModel.findOne({ username: user }).populate(
+                "favourites" // Assuming a 'favourites' field holding city references
+            );
 
-            if (!favourites) {
-                console.log(`No favourites found for user ${user}.`);
-                return [];
+            // 3. Handle Non-existent User (Optional)
+            if (!userProfile) {
+                // Decide how to handle a non-existent user (e.g., throw an error or log a warning)
+                console.warn("User not found:", user);
+                return []; // Return empty array if user not found (optional)
             }
+
+            // 4. Get City IDs and Transform to City Objects (Using Promise.all)
             //@ts-ignore
-            return favourites.favourite;
+            const cityIds = userProfile.favourites.map((city) => city._id);
+            //@ts-ignore
+            const cities = await Promise.all(cityIds.map((id) => this.getCityFromDbByID(id, weather)));
+
+            console.log(`Favourites retrieved for user ${user}:`, cities);
+            return cities; // Return array of City objects
         } catch (error) {
             console.error('Error getting favourites for user:', error);
             throw error;
@@ -287,7 +319,9 @@ export class Database {
     public async getCityFromDb(cityToFind: City | undefined) {
         try {
             // @ts-ignore
-            const city = await CityModel.findOne({ name: cityToFind.name, namecountry: cityToFind.namecountry, region: cityToFind.region }).exec();
+            const { name, country, region } = cityToFind;
+
+            const city = await CityModel.findOne({ name: name, country: country, region: region });
 
             if (city) {
                 console.log('City found in the database');
@@ -302,11 +336,45 @@ export class Database {
         }
     }
 
-    // Metodo per recuperare una determinata citta tramite l'id
-    public async getCityFromDbByID(id: string | undefined) {
+    // Metodo per ottenere un id di citta per citta
+    public async getIdCityFromDb(cityToFind: City | undefined) {
         try {
-            // Use Mongoose's findOne method to search for a city by name
-            const city = await CityModel.findOne({ _id: id }).exec();
+            //@ts-ignore
+            const { name, country, region } = cityToFind;
+            console.log("-------------------------------");
+            console.log(cityToFind);
+            // @ts-ignore
+            const cityId = await CityModel.findOne({
+                name: name,
+                country: country,
+                region: region
+            }).select('_id');
+            console.log(cityId);
+            if (cityId) {
+                console.log('City id found in the database');
+                return cityId; // Return the found city
+            } else {
+                console.log('City id not found in the database.');
+                return null; // Return null if city is not found
+            }
+        } catch (error) {
+            console.error('Error fetching city from the database:', error);
+            throw error; // Rethrow the error to be handled by the caller
+        }
+    }
+
+    // Metodo per recuperare una determinata citta tramite l'id
+    public async getCityFromDbByID(id: string | undefined, weather : string | undefined) {
+        try {
+            console.log(weather)
+            let city;
+            // @ts-ignore
+            if(weather?.length > 2 && typeof weather !== undefined && weather !== "undefined"){
+                city = await CityModel.findOne({ _id: id }).exec();
+            }else{
+                console.log('------------------------------------');
+                city = await CityModel.findOne({ _id: id }).select('-weatherCurrent -weatherHourly -weatherDaily').exec();
+            }
 
             if (city) {
                 console.log('City found in the database');
@@ -324,9 +392,5 @@ export class Database {
     //endregion
 
     ////////////////////////////
-
-    //region User Auth
-
-    //endregion
 
 }

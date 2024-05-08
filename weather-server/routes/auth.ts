@@ -24,7 +24,6 @@ authRouter.post('/register', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10)
         const newUser = new User({username, password: hashedPassword})
         await newUser.save()
-        db.addUserToFavourite(username)
 
         //res.status(201).json({message: "Utente registrato con successo!", user: newUser.username})
         //@ts-ignore

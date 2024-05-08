@@ -7,6 +7,7 @@ const CitySchema = new mongoose.Schema({
     name: String,
     lat: Number,
     long: Number,
+    region: String,
     timezone: String,
     country: String,
     weatherCurrent: Array<Current>,
