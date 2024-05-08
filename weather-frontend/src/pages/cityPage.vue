@@ -6,7 +6,6 @@
           <button @click="prova()">
             click
           </button>
-          {{console.log(dataForDays.value[2])}}
           <br>
           <br>
           <br>
@@ -46,6 +45,7 @@
 import {cityStore} from "stores/cityStore";
 import {ref, onBeforeMount} from 'vue'
 import axios from 'axios';
+import _ from 'lodash'
 
 const loaded = ref(false);
 const dataForDays = ref([])
@@ -55,58 +55,72 @@ const myCityStore = cityStore();
 const currentDay = ref([])
 myCityStore.hydrateFromSessionStorage();
 
+
+const thisCity = {
+    name: myCityStore.name,
+    lat: myCityStore.lat,
+    long: myCityStore.long,
+    timezone: myCityStore.timezone,
+    country: myCityStore.country,
+    region: myCityStore.region,
+}
+
 onBeforeMount(()=>{
-  createVoidArray()
   createDays()
   beforeMount()
 })
 
 const beforeMount = async () => {
-  await takeCoords()
+  console.log(thisCity)
+  await fetchHourlyWeather(thisCity)
   splitForWeek()
-  currentDay.value = dataForDays.value[0]
+  currentDay.value = { ... dataForDays.value[0]}
 }
 
 
 
-const takeCoords  = async () => {
-  try {
-    const value = myCityStore.name;
-    const params = {
-      value,
-      num_days: 7
-    }
 
-    //const {data} = await axios.get(`http://localhost:3000/hourly`, {params: params});
-    const response = await axios.get(`http://localhost:3000/hourly`, {params: params});
-    data.value = response.data;
+async function fetchHourlyWeather(city) {
+  try {
+    console.log((city))
+    const response = await axios.get(`http://localhost:3000/hourly`, {
+      params: {
+        city: JSON.stringify(city), // Stringify city object for query parameter
+        num_days: 7, // Number of days as a string (already done on the backend)
+      },
+    });
+    const data = response.data;
+    // Handle the fetched data here (e.g., update UI, store in state)
+    console.log("data" + data); // Example: Log the data to the console
+
+    return data; // You can return the data if needed
   } catch (error) {
-    console.error('Error fetching hourly data:', error);
+    console.error('Error fetching hourly weather:', error);
     // Handle errors appropriately (e.g., display error message to user)
   }
 }
+
 
 const splitForWeek = () => {
   for (let i = 0; i < 6; i++) {
     let splitVar = i*24
     let secondSplitVar = i*24+24
-      dataForDays.value[i] =
-      {
-        time: data.value.time.slice(splitVar,secondSplitVar),
-        apparent_temperature: data.value.apparent_temperature.slice(splitVar, secondSplitVar),
-        cloud_cover: data.value.cloud_cover.slice(splitVar, secondSplitVar),
-        precipitation: data.value.precipitation.slice(splitVar, secondSplitVar),
-        precipitation_probability: data.value.precipitation_probability.slice(splitVar, secondSplitVar),
-        pressure_msl: data.value.pressure_msl.slice(splitVar, secondSplitVar),
-        relative_humidity_2m: data.value.relative_humidity_2m.slice(splitVar, secondSplitVar),
-        soil_moisture_3_to_9cm: data.value.soil_moisture_3_to_9cm.slice(splitVar, secondSplitVar),
-        soil_temperature_6cm: data.value.soil_temperature_6cm.slice(splitVar, secondSplitVar),
-        surface_pressure: data.value.surface_pressure.slice(splitVar, secondSplitVar),
-        temperature_2m: data.value.temperature_2m.slice(splitVar, secondSplitVar),
-        wind_direction_80m: data.value.wind_direction_80m.slice(splitVar, secondSplitVar),
-      }
+    dataForDays.value[i] ={
+      time: data.value.time.slice(splitVar,secondSplitVar),
+      apparent_temperature: data.value.apparent_temperature.slice(splitVar, secondSplitVar),
+      cloud_cover: data.value.cloud_cover.slice(splitVar, secondSplitVar),
+      precipitation: data.value.precipitation.slice(splitVar, secondSplitVar),
+      precipitation_probability: data.value.precipitation_probability.slice(splitVar, secondSplitVar),
+      pressure_msl: data.value.pressure_msl.slice(splitVar, secondSplitVar),
+      relative_humidity_2m: data.value.relative_humidity_2m.slice(splitVar, secondSplitVar),
+      soil_moisture_3_to_9cm: data.value.soil_moisture_3_to_9cm.slice(splitVar, secondSplitVar),
+      soil_temperature_6cm: data.value.soil_temperature_6cm.slice(splitVar, secondSplitVar),
+      surface_pressure: data.value.surface_pressure.slice(splitVar, secondSplitVar),
+      temperature_2m: data.value.temperature_2m.slice(splitVar, secondSplitVar),
+      wind_direction_80m: data.value.wind_direction_80m.slice(splitVar, secondSplitVar),
+    }
   }
-  console.log(dataForDays.value)
+  console.log(dataForDays.value[i])
   loaded.value=true;
 }
 const createDays = () => {
@@ -120,7 +134,7 @@ const createDays = () => {
 }
 
 const changeDay = (index) => {
-  currentDay.value =  dataForDays.value[index]
+  currentDay.value =  { ... dataForDays.value[index]}
   console.log(currentDay.value)
 }
 const createVoidArray = () => {
@@ -143,18 +157,46 @@ const createVoidArray = () => {
   }
 }
 </script>
+dataForDays.value[i].time = _.slice(data.value.time, splitVar, secondSplitVar);
+dataForDays.value[i].apparent_temperature = _.slice(data.value.apparent_temperature, splitVar, secondSplitVar);
+dataForDays.value[i].cloud_cover = _.slice(data.value.cloud_cover, splitVar, secondSplitVar);
+dataForDays.value[i].precipitation = _.slice(data.value.precipitation, splitVar, secondSplitVar);
+dataForDays.value[i].precipitation_probability = _.slice(data.value.precipitation_probability, splitVar, secondSplitVar);
+dataForDays.value[i].pressure_msl = _.slice(data.value.pressure_msl, splitVar, secondSplitVar);
+dataForDays.value[i].relative_humidity_2m = _.slice(data.value.relative_humidity_2m, splitVar, secondSplitVar);
+dataForDays.value[i].soil_moisture_3_to_9cm = _.slice(data.value.soil_moisture_3_to_9cm, splitVar, secondSplitVar);
+dataForDays.value[i].soil_temperature_6cm = _.slice(data.value.soil_temperature_6cm, splitVar, secondSplitVar);
+dataForDays.value[i].surface_pressure = _.slice(data.value.surface_pressure, splitVar, secondSplitVar);
+dataForDays.value[i].temperature_2m = _.slice(data.value.temperature_2m, splitVar, secondSplitVar);
+dataForDays.value[i].wind_direction_80m = _.slice(data.value.wind_direction_80m, splitVar, secondSplitVar);
+<!--// const takeDataBeforeMount = async () => {-->
+<!--//   try {-->
+<!--//     const value = myCityStore.name;-->
+<!--//     const params = {-->
+<!--//       value,-->
+<!--//     }-->
+<!--//     const response = await axios.get(`http://localhost:3000/`, {params: params});-->
+<!--//   } catch (error) {-->
+<!--//     console.error('Error fetching hourly data:', error);-->
+<!--//   }-->
+<!--// }-->
 
-// const takeDataBeforeMount = async () => {
-//   try {
-//     const value = myCityStore.name;
-//     const params = {
-//       value,
-//     }
-//     const response = await axios.get(`http://localhost:3000/`, {params: params});
-//   } catch (error) {
-//     console.error('Error fetching hourly data:', error);
-//   }
-// }
+<!--const takeCoords  = async () => {-->
+<!--try {-->
+<!--const value = myCityStore;-->
+<!--const params = {-->
+<!--value,-->
+<!--num_days: 7-->
+<!--}-->
+
+<!--//const {data} = await axios.get(`http://localhost:3000/hourly`, {params: params});-->
+<!--const response = await axios.get(`http://localhost:3000/hourly`, {params: params});-->
+<!--data.value = response.data;-->
+<!--} catch (error) {-->
+<!--console.error('Error fetching hourly data:', error);-->
+<!--// Handle errors appropriately (e.g., display error message to user)-->
+<!--}-->
+<!--}-->
 <style scoped>
 .page-upper-container{
   display:flex;
