@@ -20,15 +20,15 @@ const searchCity = async (value : string): Promise<any>  => {
     const city = await geoLoc.getLatLon(value);
     console.log(city);
     //await db.addCityToDB(city)
-    //@ts-ignore
-    city.forEach(async (cityData) => {
-        try {
-            await db.addCityToDB(cityData);
-            console.log(`City "${cityData.name}" saved successfully.`);
-        } catch (error) {
-            console.error('Error saving city:', error);
-        }
-    });
+    // //@ts-ignore
+    // city.forEach(async (cityData) => {
+    //     try {
+    //         await db.addCityToDB(cityData);
+    //         console.log(`City "${cityData.name}" saved successfully.`);
+    //     } catch (error) {
+    //         console.error('Error saving city:', error);
+    //     }
+    // });
     return city
 }
 
@@ -105,23 +105,32 @@ router.use('/profile', profileRouter)
 
 // per ottenere il meteo di una citta cercando per citta
 router.get('/get-city-weather',async (req, res) => {
-    const city : City = JSON.parse(req.query.city+""); // Accessing query parameters
-    // Process the city data (e.g., query weather-frontend API)
-    // @ts-ignore
-    let cityDb = await db.getCityWeatherFromDb(city)
-    console.log(cityDb);
+    try {
+        const city: City = JSON.parse(req.query.city + ""); // Accessing query parameters
+        // Process the city data (e.g., query weather-frontend API)
+        // @ts-ignore
+        let cityDb = await db.getCityWeatherFromDb(city)
+        console.log(cityDb);
 
-    res.json(cityDb);
+        res.json(cityDb);
+    }catch (error){
+        console.log(error)
+        throw error
+    }
 });
 
 // per ottenere tutte le citta salvate
 router.get('/get-cities',async (req, res) => {
+    try {
+        // @ts-ignore
+        let cities = await db.getAllCity();
+        console.log(cities);
 
-    // @ts-ignore
-    let cities = await db.getAllCity();
-    console.log(cities);
-
-    res.json(cities);
+        res.json(cities);
+    }catch(error){
+        console.log(error)
+        throw error
+    }
 });
 
 //endregion

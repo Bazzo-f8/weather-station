@@ -299,8 +299,10 @@ export class Database {
     // Metodo per recuperare una determinata citta tramite il nome
     public async getCityWeatherFromDb(cityToFind: City | undefined) {
         try {
+            //@ts-ignore
+            const { name, country, region } = cityToFind;
             // @ts-ignore
-            const city = await CityModel.findOne({ name: cityToFind.name, namecountry: cityToFind.namecountry, region: cityToFind.region }).select('-weatherCurrent -weatherHourly -weatherDaily').exec();
+            const city = await CityModel.findOne({ name: name, country: country, region: region }).select('weatherCurrent weatherHourly weatherDaily').exec();
 
             if (city) {
                 console.log('City found in the database');

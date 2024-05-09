@@ -83,7 +83,8 @@ const chooseIcon = (hour) => {
 }
 
 const beforeMount = async () => {
-  localData.value = await fetchHourlyWeather(thisCity)
+  //localData.value = await fetchHourlyWeather(thisCity)
+  await  fetchHourlyWeather(thisCity)
   await splitForWeek()
   console.log("finished async functions")
   console.log(currentDay.value)
@@ -97,10 +98,13 @@ async function fetchHourlyWeather(city) {
         num_days: 7, // Number of days as a string (already done on the backend)
       },
     });
-    const data = response.data;
+    //const data = response.data;
+    localData.value = response.data;
+    //console.log(data)
+    console.log(localData.value);
     // Handle the fetched data here (e.g., update UI, store in state)
     console.log("finished hourly api"); // Example: Log the data to the console
-    return data; // You can return the data if needed
+    //return data; // You can return the data if needed
   } catch (error) {
     console.error('Error fetching hourly weather:', error);
     // Handle errors appropriately (e.g., display error message to user)
