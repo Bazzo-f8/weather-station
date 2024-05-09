@@ -4,10 +4,10 @@ const routes = [
 
   {
     path: '/',
-    component: () => import('layouts/loggedLayout.vue'),
+    component: () => import('layouts/unloggedLayout.vue'),
     children: [
-  { path: '', component: () => import('pages/IndexPage.vue') }
-]
+      {path: '', component: () => import('pages/IndexPage.vue')}
+    ]
   },
   {
     path: '/Favourite',

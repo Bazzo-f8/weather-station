@@ -3,24 +3,24 @@
     <div class="page-upper-container">
 
         <div class="current-data">
-          <button @click="prova()">
-            click
-          </button>
+          apparent temperature: {{currentDay.value.apparent_temperature}}°
           <br>
+          humidity: {{currentDay.value.relative_humidity_2m}}
           <br>
+          {{icon.value}}
           <br>
         </div>
 
       <q-list class="hourly-container" v-if="loaded">
-        <q-item v-for="(index) in 24" :key="index" class="hourly-div">
+        <q-item v-for="(index) in 24" :key="index" class="hourly-div" @click="ChangeHour(index)">
           <q-item-section>
-            {{index}}:00
+            {{index-1}}:00
           </q-item-section>
           <q-item-section>
-            {{currentDay.value?.apparent_temperature?.[index]}}
+            {{currentDay.value?.apparent_temperature?.[index]}}°
           </q-item-section>
           <q-item-section>
-            Field 3
+            {{currentDay.value?.wind_direction_80m?.[index]}}°
           </q-item-section>
         </q-item>
       </q-list>
@@ -46,8 +46,9 @@ import {cityStore} from "stores/cityStore";
 import {ref, onBeforeMount} from 'vue'
 import axios from 'axios';
 import _ from 'lodash'
-
+const icon = ref('')
 const loaded = ref(false);
+const currentHour = ref({})
 const dataForDays = ref([])
 const localData = ref({})
 const arrayDays = ref([])
@@ -69,15 +70,24 @@ onBeforeMount(()=>{
   createDays()
 })
 
+const chooseIcon = (hour) => {
+  switch(currentDay.value.precipitation[hour]){         //scambiare i valori con i valori della pioggia
+    case 1 : icon.value= 'fa-solid fa-sun'
+      break;
+    case 2:  icon.value= 'fa-solid fa-cloud-rain'
+      break;
+    case 3:  icon.value= 'fa-solid fa-cloud-showers-heavy'
+      break;
+    case 4: icon.value= 'fa-solid fa-snowflake'
+  }
+}
+
 const beforeMount = async () => {
   localData.value = await fetchHourlyWeather(thisCity)
   await splitForWeek()
   console.log("finished async functions")
   console.log(currentDay.value)
 }
-
-
-
 
 async function fetchHourlyWeather(city) {
   try {
@@ -118,6 +128,7 @@ const splitForWeek = async () => {
       }
   }
   currentDay.value = { ... dataForDays.value[0]}
+  currentHour.value = {... currentDay.value[0]}
   console.log(currentDay.value)
   loaded.value=true;
 }
@@ -134,6 +145,10 @@ const createDays = () => {
 const changeDay = (index) => {
   currentDay.value =  { ... dataForDays.value[index]}
   console.log(currentDay.value)
+}
+const ChangeHour = (hour) => {
+  currentHour.value = {... currentDay.value[hour]};
+  chooseIcon(currentDay.value.precipitation[hour])
 }
 </script>
 dataForDays.value[i].time = _.slice(data.value.time, splitVar, secondSplitVar);
@@ -182,7 +197,7 @@ dataForDays.value[i].wind_direction_80m = _.slice(data.value.wind_direction_80m,
 }
 
 .current-data{
-  background-color: #ec0000;
+  background-color: #ffffff;
   width: 40%;
   height: 50%;
   margin-top: 5%;

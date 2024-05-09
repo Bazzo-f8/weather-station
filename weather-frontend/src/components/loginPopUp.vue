@@ -55,7 +55,7 @@
           size="lg"
           class="full-width"
           :label="nameBot"
-          @click="submit"
+          @click="isSubmitted"
         />
       </q-card-actions>
       <q-card-section class="text-center q-pa-none">
@@ -93,6 +93,14 @@ const nameBot = ref("Login");
 const visibilityIcon = ref("visibility");
 const passwordFieldType = ref("password");
 
+
+const isSubmitted = async () => {
+  if (RegIf.value){
+    await loginUser()
+  }else{
+    await registerUser()
+  }
+}
 //controllo input
 const required = (val) => {
   return (val && val.length > 0) || "insert something";
@@ -122,16 +130,49 @@ const switchVisibility = () => {
   }
 };
 //collegamento back end
-const submit = async () => {
+const loginUser = async () => {
   try {
-    const response = await axios.post("url back end", {
-      email: email.value,
-      password: password.value,
+    const username = user.value
+    const password = pass.value
+    const response = await axios.post('http://localhost:3000/auth/login', {
+      username,
+      password,
     });
-    localStorage.setItem();
-    router.push("/favorite");
-  } catch (err) {
-    console.log("errore durante il login");
+
+    if (response.status === 200) { // Check for successful login (200 OK)
+      console.log('Login successful:', response.data);
+      return response.data; // Return the response data (including token)
+    } else {
+      console.error('Login failed:', response.data);
+      throw new Error('Login failed'); // Throw an error for handling in the calling code
+    }
+  } catch (error) {
+    console.error('Error during login:', error);
+    throw error; // Re-throw the error for handling in the calling code
+  }
+}
+
+
+const registerUser = async () => {
+  try {
+    const username = user.value
+    const password = pass.value
+    const response = await axios.post('http://localhost:3000/auth/register', {
+      username,
+      password,
+    });
+
+
+    if (response.status === 201) { // Check for successful registration (201 Created)
+      console.log('User registered successfully:', response.data);
+      registered.value = response.data; // Return the response data (optional)
+    } else {
+      console.error('Registration failed:', response.data);
+      throw new Error('Registration failed'); // Throw an error to handle in the calling code
+    }
+  } catch (error) {
+    console.error('Error during registration:', error);
+    throw error; // Re-throw the error for handling in the calling code
   }
 };
 //-------------------------------------------------------------------------------------------------------------------------------------

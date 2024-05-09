@@ -3,10 +3,9 @@
     <div class="search-area">
       <div class="q-gutter-md row">
         <q-input outlined v-model="searchBar" label="Search City" />
-      </div>
       <q-btn push color="primary" label="Push" @click="searchForCity"/>
+      </div>
     </div>
-
   </q-page>
   <div v-if="isSearched">
     <div v-for="city in cityData" :key="city.name">
@@ -44,7 +43,7 @@ async function searchForCity() {
     cityData.value = response.data;
 
     // Handle the fetched city data here (e.g., display suggestions, update UI)
-    //console.log(cityData.value); // Example: Log the data to the console
+    console.log(cityData.value); // Example: Log the data to the console
   } catch (error) {
     console.error('Error fetching city:', error);
   }
@@ -55,9 +54,6 @@ async function searchForCity() {
 
 
 <style scoped>
-.back{
-  background-color: #5f5f61;
-}
 .search-area{
   margin-top: 1%;
   margin-right: 10%;

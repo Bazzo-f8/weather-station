@@ -4,11 +4,16 @@
       <q-toolbar>
         <q-toolbar-title>
           <q-avatar>
-            <img src="weather-frontend/public/icons/favicon-96x96.png">
+            <img src="public/icons/favicon-96x96.png"/>
           </q-avatar>
           Weather Station
         </q-toolbar-title>
-        <search-bar></search-bar>
+          <div class="search-area">
+            <div class="q-gutter-md row">
+              <q-input outlined v-model="searchBar" label="Search City" />
+              <q-btn push color="primary" label="Push" @click="searchForCity"/>
+            </div>
+          </div>
         <div class="spaceforlogin">
           <q-icon  name="fa-solid fa-circle-user" class="loginlogo"> </q-icon>
         </div>
@@ -26,7 +31,6 @@
 </template>
 <script setup>
 import MyFooter from "components/myFooter.vue";
-import SearchBar from "components/searchBar.vue";
 </script>
 <style scoped>
 .loginlogo{

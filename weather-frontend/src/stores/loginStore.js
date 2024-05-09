@@ -8,8 +8,5 @@ export const loginStore = defineStore('isLogged', {
 
   },
   actions: {
-    login() {
-      this.isLogged = true;
-    },
   },
 });

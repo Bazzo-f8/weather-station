@@ -8,7 +8,6 @@ const router = useRouter();
 const precipitation = ref('')
 
 onMounted(()=>{
-  definePrecipitation( Prop.city.precipitation)
 })
 
 const Prop = defineProps({
@@ -21,27 +20,6 @@ const goToCity = () =>{
   myCityStore.refresh(Prop.city);
   router.push({ path: `/city/${Prop.city.name}`})
 }
-
-const definePrecipitation = (value) => {
-  switch (value){
-    case 0:{
-      precipitation.value = 'fa-solid fa-sun'
-      break
-    }
-    case 1:{
-      precipitation.value = 'fa-solid fa-cloud'
-      break
-    }
-    case 2:{
-      precipitation.value = 'fa-solid fa-cloud-rain'
-      break
-    }
-    case 3:{
-      precipitation.value = 'fa-solid fa-snowflake'
-      break
-    }
-  }
-}
 </script>
 
 <template>
@@ -51,12 +29,12 @@ const definePrecipitation = (value) => {
         <q-card-section class="bg-light-blue-4 text-white">
           <div class="text-h6"> {{Prop.city.name}} </div>
           <div class="absolute-bottom text-subtitle2 text-center">
-            {{ Prop.city.degrees }}°
+            {{ Prop.city.region }}
           </div>
         </q-card-section>
 
         <q-card-actions vertical align="center" class="iconExternalCard">
-          <q-icon :name="precipitation" class="iconCard"> </q-icon> <!-- inserire l'icona dipendentemente da se piove o no-->
+            {{Prop.city.region}}
         </q-card-actions>
       </q-card>
 </template>
